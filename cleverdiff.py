@@ -43,8 +43,8 @@ def summarise_results(diffseen, diffresult):
         summary of the contents of diffresult.
     """
     MODE_DESCRIPTION = {
-        0: "identical diffs",
-        1: "same diff but different lines",
+        0: "identical diff in different files",
+        1: "same diff but different line numbers",
     }
 
     result = ""
