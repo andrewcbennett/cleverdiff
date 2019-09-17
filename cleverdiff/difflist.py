@@ -1,9 +1,8 @@
 from __future__ import (absolute_import, division, print_function)  # noqa
 
 import difflib
-import sys
 
-from diffhunk import DiffHunk, Pair
+from cleverdiff.diffhunk import DiffHunk, Pair
 
 
 class DiffList(object):

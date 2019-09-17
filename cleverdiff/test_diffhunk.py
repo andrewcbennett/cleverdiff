@@ -2,7 +2,7 @@ from __future__ import (absolute_import, division, print_function)  # noqa
 
 import textwrap
 
-from diffhunk import DiffHunk, Pair
+from cleverdiff.diffhunk import DiffHunk, Pair
 
 class Test_diffhunk(object):
     CONTEXT = Pair("file1", "file2")

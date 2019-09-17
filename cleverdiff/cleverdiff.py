@@ -3,7 +3,7 @@ from __future__ import (absolute_import, division, print_function)  # noqa
 import sys
 import collections
 
-from difflist import DiffList
+from .difflist import DiffList
 
 DiffRecord = collections.namedtuple('DiffRecord',
                                     'diffitem controlindex diffmode')
@@ -13,14 +13,6 @@ def contexts(diffitem):
     msg = "{} (line {}) to {} (line {})"
     return msg.format(diffitem.contexts.first, diffitem.lines.first,
                       diffitem.contexts.second, diffitem.lines.second)
-
-
-def main_diff(file1, file2):
-    """
-    Given a generator containing diff hunks from difflib, establish the
-    similarity of diffs between 
-    """
-    pass
 
 
 def summarise_results(diffseen, diffresult):
@@ -102,5 +94,3 @@ def main(infilepairs):
     print(summarise_results(diffseen, diffresult))
 
 
-if __name__ == '__main__':
-    main(sys.argv[1:])

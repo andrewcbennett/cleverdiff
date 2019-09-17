@@ -5,10 +5,10 @@ import difflib
 import pytest
 import tempfile
 import os
-from mock import MagicMock, patch, call
+from mock import patch, call
 
-from diffhunk import DiffHunk, Pair
-from difflist import DiffList
+from cleverdiff.diffhunk import Pair
+from cleverdiff.difflist import DiffList
 
 
 class Test_DiffList__translate_diff_syntax(object):
