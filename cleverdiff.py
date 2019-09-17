@@ -6,7 +6,7 @@ import collections
 from difflist import DiffList
 
 DiffRecord = collections.namedtuple('DiffRecord',
-                                    'diffitem controlindex diffmode filenames')
+                                    'diffitem controlindex diffmode')
 
 
 def contexts(diffitem):
@@ -53,7 +53,7 @@ def summarise_results(diffseen, diffresult):
         result += (f"DIFF {seenindex:3d}:\n"
                    f"{str(seenitem)}")
         result2 = {key: [] for key in MODE_DESCRIPTION.keys()}
-        for hunk2, controlindex, mode, filenames in diffresult:
+        for hunk2, controlindex, mode in diffresult:
             if controlindex != seenindex:
                 continue
 
@@ -67,7 +67,7 @@ def summarise_results(diffseen, diffresult):
                 if diffitems:
                     result += f" * with {MODE_DESCRIPTION[mode]}:\n"
                     for diffitem in diffitems:
-                        result += f"    {diffitem.context_to_string(*filenames)}\n"
+                        result += f"    {diffitem.context_to_string()}\n"
             result += "\n\n"
 
     return result
@@ -92,7 +92,6 @@ def main(infilepairs):
                                 diffitem=diffitem,
                                 controlindex=seenindex,
                                 diffmode=cmp,
-                                filenames=[lhs, rhs],
                             )
                         )
                         break

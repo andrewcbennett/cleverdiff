@@ -6,7 +6,7 @@ import collections
 class DiffHunk(object):
     """A class to contain a single difference between two strings."""
 
-    def __init__(self, mode, content, lines):
+    def __init__(self, mode, content, context, lines):
         """
         Initialise a DiffHunk object.
 
@@ -20,18 +20,23 @@ class DiffHunk(object):
         content : str
             The actual content of the difference in each file.
 
-        lines : Pair
+        context : Pair of str
+            Labels representing each side of the comparison for humans to read.
+
+        lines : Pair of int
             The starting line numbers of the difference on each side as
             integers.
 
         """
         self.mode = mode
         self.content = content
+        self.context = context
         self.lines = lines
 
-    def context_to_string(self, filename1="", filename2=""):
-        colon = ":" if filename1 else ""
-        return f"{filename1}{colon}{self.lines.first} vs {filename2}{colon}{self.lines.second}"
+    def context_to_string(self, no_labels=False):
+        context1 = "" if no_labels else self.context.first
+        context2 = "" if no_labels else self.context.second
+        return f"{context1}:{self.lines.first} vs {context2}:{self.lines.second}"
 
     def __str__(self):
         return f"{self.mode} in {self.context_to_string()}:\n{self.content}\n"

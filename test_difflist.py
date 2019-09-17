@@ -214,7 +214,8 @@ class Test_DiffList_from_files(object):
                     endsuite
                   """)
         filetext2 = filetext1.replace("baz", "boo")
-        expected = [str(d) for d in DiffList(filetext1, filetext2)._diffs]
+        expected = [d.context_to_string(no_labels=True)
+                    for d in DiffList(filetext1, filetext2)._diffs]
 
         with tempfile.NamedTemporaryFile(mode="w+t", delete=False) as file1:
             file1.write(filetext1)
@@ -222,7 +223,7 @@ class Test_DiffList_from_files(object):
             with tempfile.NamedTemporaryFile(mode="w+t", delete=False) as file2:
                 file2.write(filetext2)
                 file2.seek(0)
-                actual = [str(d)
+                actual = [d.context_to_string(no_labels=True)
                           for d in DiffList.from_files(file1.name,
                                                        file2.name)._diffs]
 
@@ -291,9 +292,9 @@ class Test_DiffList__parse(object):
             difflist._parse(input_lines)
 
             expected_calls = [
-                call(mode="change", content="-oldline\n+newline\n", lines=Pair(2,2)),
-                call(mode="delete", content="-deleteme\n", lines=Pair(4, 3)),
-                call(mode="insert", content="+insertme\n", lines=Pair(5, 5)),
+                call(mode="change", content="-oldline\n+newline\n", context=Pair(first="", second=""), lines=Pair(2,2)),
+                call(mode="delete", content="-deleteme\n", context=Pair(first="", second=""), lines=Pair(4, 3)),
+                call(mode="insert", content="+insertme\n", context=Pair(first="", second=""), lines=Pair(5, 5)),
             ]
             assert expected_calls == diffhunk_patch.mock_calls
 

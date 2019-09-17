@@ -128,6 +128,7 @@ class DiffList(object):
                 if mode:
                     lines = Pair(first=line1, second=line2)
                     hunk_obj = DiffHunk(mode=mode, content=hunk_content,
+                                        context=Pair(first=self._firstlabel, second=self._secondlabel),
                                         lines=lines)
                     difflist.append(hunk_obj)
 
@@ -138,6 +139,7 @@ class DiffList(object):
                 hunk_content += diff_line
 
         hunk_obj = DiffHunk(mode=mode, content=hunk_content,
+                            context=Pair(first=self._firstlabel, second=self._secondlabel),
                             lines=Pair(first=line1, second=line2))
         difflist.append(hunk_obj)
 
