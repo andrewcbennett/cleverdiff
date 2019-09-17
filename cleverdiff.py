@@ -6,7 +6,7 @@ import collections
 from difflist import DiffList
 
 DiffRecord = collections.namedtuple('DiffRecord',
-                                    'diffitem controlindex diffmode')
+                                    'diffitem controlindex diffmode filenames')
 
 
 def contexts(diffitem):
@@ -44,8 +44,7 @@ def summarise_results(diffseen, diffresult):
     """
     MODE_DESCRIPTION = {
         0: "identical diffs",
-        1: "same context, but different lines",
-        2: "different contexts",
+        1: "same diff but different lines",
     }
 
     result = ""
@@ -54,12 +53,12 @@ def summarise_results(diffseen, diffresult):
         result += (f"DIFF {seenindex:3d}:\n"
                    f"{str(seenitem)}")
         result2 = {key: [] for key in MODE_DESCRIPTION.keys()}
-        for hunk2, controlindex, mode in diffresult:
+        for hunk2, controlindex, mode, filenames in diffresult:
             if controlindex != seenindex:
                 continue
 
             # TODO: stick this assert in a test!
-            assert mode < 3, "unexpected value for mode"
+            assert mode < 2, "unexpected value for mode"
             result2[mode].append(hunk2)
 
         if any([len(v) for v in result2.values()]):
@@ -68,7 +67,7 @@ def summarise_results(diffseen, diffresult):
                 if diffitems:
                     result += f" * with {MODE_DESCRIPTION[mode]}:\n"
                     for diffitem in diffitems:
-                        result += f"    {diffitem.context_to_string()}\n"
+                        result += f"    {diffitem.context_to_string(*filenames)}\n"
             result += "\n\n"
 
     return result
@@ -86,11 +85,16 @@ def main(infilepairs):
             if len(diffseen) > 0:
                 for seenindex, seenitem, in enumerate(diffseen):
                     cmp = diffitem.compare(seenitem)
-                    if cmp < 3:
-                        diffresult.append(DiffRecord(diffitem=diffitem,
-                                                     controlindex=seenindex,
-                                                     diffmode=cmp))
+                    if cmp < 2:
                         found = True
+                        diffresult.append(
+                            DiffRecord(
+                                diffitem=diffitem,
+                                controlindex=seenindex,
+                                diffmode=cmp,
+                                filenames=[lhs, rhs],
+                            )
+                        )
                         break
 
             if not found:

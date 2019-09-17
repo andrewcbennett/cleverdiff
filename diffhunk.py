@@ -29,8 +29,9 @@ class DiffHunk(object):
         self.content = content
         self.lines = lines
 
-    def context_to_string(self):
-        return f"line {self.lines.first} vs line {self.lines.second}"
+    def context_to_string(self, filename1="", filename2=""):
+        colon = ":" if filename1 else ""
+        return f"{filename1}{colon}{self.lines.first} vs {filename2}{colon}{self.lines.second}"
 
     def __str__(self):
         return f"{self.mode} in {self.context_to_string()}:\n{self.content}\n"
