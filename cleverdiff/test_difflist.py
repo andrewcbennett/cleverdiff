@@ -285,8 +285,8 @@ class Test_DiffList__parse(object):
         #  '+insertme']
 
         difflist = DiffList(ref, new)
-        with patch("difflist.DiffHunk") as diffhunk_patch, \
-             patch("difflist.DiffHunk._translate_diff_syntax",
+        with patch("cleverdiff.difflist.DiffHunk") as diffhunk_patch, \
+             patch("cleverdiff.difflist.DiffHunk._translate_diff_syntax",
                    return_value=[("change", 2, 2), ("delete", 4, 3),
                                  ("insert", 5, 5)]) as trans_patch:
             difflist._parse(input_lines)
