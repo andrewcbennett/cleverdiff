@@ -1,11 +1,16 @@
 # CleverDiff
+[![Build Status](https://travis-ci.org/andrewcbennett/cleverdiff.svg?branch=master)](https://travis-ci.org/andrewcbennett/cleverdiff)
+
 A tool for describing multiple differences in files.
 
 ## Why?
 If you have to compare files which contain multiple differences that are the same, you will know how tedius it is to step through every single hunk of the standard `diff` output. *CleverDiff* will show you each unique diff hunk once, then give you a summary of where else it has found the difference across multiple files.
 
 ## Installation
-Just clone the repo at present!
+*CleverDiff* is available on PyPI:
+```
+pip install --user cleverdiff
+```
 
 ## Usage
 Run the `cleverdiff.py` script, with each pair of files separated with `=` as arguments:
@@ -14,6 +19,7 @@ python3 cleverdiff.py test_data/ref1.def=test_data/new1.def test_data/ref2.def=t
 ```
 
 *CleverDiff* will find the differences between each pair of files, then determine which are identical across all files, and give you a summary:
+
 ```
 --------------------------------------------
 DIFF   0:
