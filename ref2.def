@@ -1,0 +1,562 @@
+# 4.10.0
+suite user
+  family expt
+    edit ACCOUNT 'ecrdifsd'
+    edit DARSHAN_FLAGS ''
+    edit DEBUG '0'
+    edit DELTA_DAY '0'
+    edit DISPLAY 'define_your_own:0.0'
+    edit ECF_FILES '/vol/ifs_sms/rd/user/expt'
+    edit ECF_HOME '/vol/ifs_sms/rd'
+    edit ECF_INCLUDE '/vol/ifs_sms/rd/user/expt/include'
+    edit ECF_JOB_CMD 'pifssubmit %ECF_JOB% %SCHOST% %USER%'
+    edit ECF_KILL_CMD 'pifskill %ECF_JOB%'
+    edit ECF_LOGHOST 'ccb-log'
+    edit ECF_LOGPORT '9314'
+    edit ECF_OUT '/vol/ifs_sms/rd'
+    edit ECF_STATUS_CMD 'true'
+    edit ECF_TRIES '1'
+    edit EXPVER 'expt'
+    edit FLEX_SUBMIT 'True'
+    edit FSFAMILY ''
+    edit HOUR ''
+    edit HUGEPAGE_MEMORY '96000'
+    edit HUGEPAGE_SIZE '2'
+    edit IFS_PRECISION 'FP'
+    edit LOGDIR '/fws7/sb/log/rd'
+    edit MEMBER '0'
+    edit OWNER 'user'
+    edit PRIORITY '50'
+    edit QUEUE 'normal'
+    edit SCHOST 'ccb'
+    edit SUBFSFAMILY ''
+    edit THREADS '1'
+    edit THREAD_STACKSIZE_MB '399'
+    edit USER 'rdx'
+    edit USE_DARSHAN 'False'
+    edit USE_HUGEPAGE 'True'
+    edit WSHOST 'lxc'
+    label INFO "CY46r1 T159 running on ccb(flex submit) using FWS /fws7"
+    family fc
+      edit FSFAMILY 'gfc'
+      edit INIBEGINDATE '2017050200'
+      edit INIBEGINHOUR '0'
+      edit STREAM 'LWDA'
+      limit SC 10
+      limit archive_tasks 1
+      family make
+        edit FSFAMILY 'make'
+        edit HOUR '0'
+        edit YMD '2017050200'
+        task createfws
+          edit ECF_JOB_CMD 'pifssubmit %ECF_JOB% %WSHOST% %USER%'
+          edit ECF_KILL_CMD 'pifskill %ECF_JOB%'
+          edit ECF_OUT '/vol/ifs_sms/rd'
+          edit ECF_STATUS_CMD 'true'
+          edit ECF_TRIES '5'
+          edit LOGDIR '/vol/ifs_sms/rd'
+          edit QUEUE 'rdverify'
+          label host "workstation"
+        task setup
+          trigger createfws eq complete
+        family sc_build
+          trigger setup eq complete
+          edit LIMITED_SETUP '1'
+          edit TMPDIR_MRFS '30'
+          family full_precision
+            edit IFS_PRECISION 'FP'
+            task clean_source_dirs
+              defstatus complete
+            task clean_build_dirs
+              defstatus complete
+            task restore_build
+              defstatus complete
+              trigger clean_source_dirs eq complete and clean_build_dirs eq complete
+              edit THREADS '4'
+            task build_ifs_system
+              trigger (clean_source_dirs eq complete and clean_build_dirs eq complete) and restore_build eq complete
+              edit STATIC_LIBRARIES '0'
+              edit THREADS '36'
+              edit VERBOSE '0'
+          endfamily
+          family single_precision
+            defstatus complete
+            edit IFS_PRECISION 'SP'
+            task clean_source_dirs
+              defstatus complete
+            task clean_build_dirs
+              defstatus complete
+            task restore_build
+              defstatus complete
+              trigger clean_source_dirs eq complete and clean_build_dirs eq complete
+              edit THREADS '4'
+            task build_ifs_system
+              trigger (clean_source_dirs eq complete and clean_build_dirs eq complete) and restore_build eq complete
+              edit STATIC_LIBRARIES '0'
+              edit THREADS '36'
+              edit VERBOSE '0'
+          endfamily
+        endfamily
+        family preserve_sc_build
+          edit THREADS '8'
+          family full_precision
+            trigger ../sc_build/full_precision eq complete
+            edit IFS_PRECISION 'FP'
+            task preserve_build
+              defstatus complete
+          endfamily
+          family single_precision
+            defstatus complete
+            trigger ../sc_build/single_precision eq complete
+            edit IFS_PRECISION 'SP'
+            task preserve_build
+              defstatus complete
+          endfamily
+        endfamily
+        task datalinks
+          trigger setup eq complete
+        task wconst
+          trigger sc_build eq complete and setup eq complete
+          edit EC_SMT 'no'
+          edit NPES '1'
+          edit QUEUE 'parallel'
+          edit THREADS '16'
+        task logfiles
+          trigger ((((createfws eq complete and setup eq complete) and sc_build eq complete) and preserve_sc_build eq complete) and datalinks eq complete) and wconst eq complete
+          edit ECF_JOB_CMD 'pifssubmit %ECF_JOB% %SCHOST% %USER%'
+          edit ECF_KILL_CMD 'pifskill %ECF_JOB%'
+          edit ECF_OUT '/vol/ifs_sms/rd'
+          edit ECF_STATUS_CMD 'true'
+          edit LOGDIR '/fws7/sb/log/rd'
+          edit THREAD_STACKSIZE_MB '399'
+      endfamily
+      family main
+        trigger make eq complete
+        family inigroup
+          trigger inigroup:YMD lt fcgroup:YMD + 3
+          repeat string YMD "2017050200"
+          task getini
+            edit PRIORITY '50'
+          task inidata_paral
+            trigger getini eq complete
+            edit LFPART1 '1'
+            edit LFPART2 '0'
+            edit NPES '120'
+            edit QUEUE 'parallel'
+            edit THREADS '6'
+          task inidata_serial
+            trigger inidata_paral eq complete
+            edit LFPART1 '0'
+            edit LFPART2 '1'
+            edit MEM '10240'
+          task wavini
+            edit MEM '2560'
+            edit NPES '1'
+            edit PRIORITY '50'
+            edit THREADS '1'
+          task wcold
+            defstatus complete
+            trigger inidata_serial eq complete and wavini eq complete
+            edit QUEUE 'parallel'
+          task getfcdata
+            trigger (((getini eq complete and inidata_paral eq complete) and inidata_serial eq complete) and wavini eq complete) and wcold eq complete
+          task getpersSST
+            trigger getfcdata eq complete
+            edit MEM '960'
+            edit NPES '4'
+            edit THREADS '2'
+          task logfiles
+            trigger (((((getini eq complete and inidata_paral eq complete) and inidata_serial eq complete) and wavini eq complete) and wcold eq complete) and getfcdata eq complete) and getpersSST eq complete
+            edit ECF_JOB_CMD 'pifssubmit %ECF_JOB% %SCHOST% %USER%'
+            edit ECF_KILL_CMD 'pifskill %ECF_JOB%'
+            edit ECF_OUT '/vol/ifs_sms/rd'
+            edit ECF_STATUS_CMD 'true'
+            edit LOGDIR '/fws7/sb/log/rd'
+            edit THREAD_STACKSIZE_MB '399'
+        endfamily
+        family fcgroup
+          trigger (fcgroup:YMD le ../lag:YMD + 1 or ../lag eq complete) and (fcgroup:YMD lt inigroup:YMD or inigroup eq complete)
+          repeat string YMD "2017050200"
+          task model
+            edit FCLENGTH '240'
+            edit HYPERTHREADING 'True'
+            edit IFS_PRECISION 'FP'
+            edit MEM '1706'
+            edit NPES '24'
+            edit NPES_FC '22'
+            edit NPES_FC_TOTAL '24'
+            edit NPES_IOSERVER '2'
+            edit QUEUE 'parallel'
+            edit THREADS '6'
+            meter step -1 240 240
+          task save
+            trigger model eq complete
+            edit ECF_TRIES '2'
+          task logfiles
+            trigger model eq complete and save eq complete
+            edit ECF_JOB_CMD 'pifssubmit %ECF_JOB% %SCHOST% %USER%'
+            edit ECF_KILL_CMD 'pifskill %ECF_JOB%'
+            edit ECF_OUT '/vol/ifs_sms/rd'
+            edit ECF_STATUS_CMD 'true'
+            edit LOGDIR '/fws7/sb/log/rd'
+            edit THREAD_STACKSIZE_MB '399'
+        endfamily
+      endfamily
+      family lag
+        trigger lag:YMD lt main/fcgroup:YMD or main/fcgroup eq complete
+        repeat string YMD "2017050200"
+        edit FCLENGTH '240'
+        task check_periods
+          defstatus complete
+          edit ECF_JOB_CMD 'pifssubmit %ECF_JOB% %WSHOST% %USER%'
+          edit ECF_KILL_CMD 'pifskill %ECF_JOB%'
+          edit ECF_OUT '/vol/ifs_sms/rd'
+          edit ECF_STATUS_CMD 'true'
+          edit LOGDIR '/vol/ifs_sms/rd'
+          edit QUEUE 'rdverify'
+          label host "workstation"
+        family mmeans
+          trigger check_periods eq complete
+          edit ECF_JOB_CMD 'pifssubmit %ECF_JOB% %WSHOST% %USER%'
+          edit ECF_KILL_CMD 'pifskill %ECF_JOB%'
+          edit ECF_OUT '/vol/ifs_sms/rd'
+          edit ECF_STATUS_CMD 'true'
+          edit LOGDIR '/vol/ifs_sms/rd'
+          edit QUEUE 'rdverify'
+          inlimit /user/expt/fc:SC
+          label host "workstation"
+          family climmeans
+            defstatus complete
+            complete climmeans:PLOTPERIOD gt 12
+            repeat enumerated PLOTPERIOD "1" "2" "3" "4" "5" "6" "7" "8" "9" "10" "11" "12"
+            task mmeans_sfc
+              complete ../climmeans:PLOTPERIOD gt 12
+            task mmeans_pl
+              complete ../climmeans:PLOTPERIOD gt 12
+            task mmeans_ml
+              complete ../climmeans:PLOTPERIOD gt 12
+          endfamily
+          family climplot
+            defstatus complete
+            complete climplot:PLOTPERIOD gt 12
+            trigger climmeans eq complete or climplot:PLOTPERIOD lt climmeans:PLOTPERIOD
+            repeat enumerated PLOTPERIOD "1" "2" "3" "4" "5" "6" "7" "8" "9" "10" "11" "12"
+            task getmeans
+              trigger ../climplot:PLOTPERIOD le 12
+            task plot_2d
+              trigger getmeans eq complete
+            task plot_wind
+              trigger getmeans eq complete
+            task plot_z500
+              trigger getmeans eq complete
+            task plot_zon
+              trigger getmeans eq complete
+            task plot_dcycle
+              trigger getmeans eq complete
+            task plot_wavfreq
+              trigger getmeans eq complete
+            task plot_vdspectra
+              trigger getmeans eq complete
+            task plot_zmeanflux
+              trigger getmeans eq complete
+            family plot_obs
+              trigger getmeans eq complete
+              task plot_obs_1
+              task plot_obs_2
+              task plot_obs_3
+              task plot_obs_4
+              task plot_obs_5
+              task plot_obs_6
+              task plot_obs_7
+              task plot_obs_8
+              task plot_obs_9
+              task plot_obs_10
+            endfamily
+            task plot_clean
+              trigger ((((((((getmeans eq complete and plot_2d eq complete) and plot_wind eq complete) and plot_z500 eq complete) and plot_zon eq complete) and plot_dcycle eq complete) and plot_wavfreq eq complete) and plot_vdspectra eq complete) and plot_zmeanflux eq complete) and plot_obs eq complete
+          endfamily
+          task climplot_save
+            defstatus complete
+            trigger climplot eq complete
+        endfamily
+        family verify
+          defstatus complete
+          edit ECF_JOB_CMD 'pifssubmit %ECF_JOB% %WSHOST% %USER%'
+          edit ECF_KILL_CMD 'pifskill %ECF_JOB%'
+          edit ECF_OUT '/vol/ifs_sms/rd'
+          edit ECF_STATUS_CMD 'true'
+          edit LOGDIR '/vol/ifs_sms/rd'
+          edit QUEUE 'rdverify'
+          label host "workstation"
+          task verify
+          task wamverify
+        endfamily
+        family archive
+          edit ARCHTYPE 'fc'
+          edit ECF_TRIES '1'
+          edit MEM_ARCH '300'
+          edit PRIORITY '50'
+          task ml
+            edit MEM '2560'
+            inlimit /user/expt/fc:archive_tasks
+            event fdb
+          task pl
+            edit MEM '2560'
+            inlimit /user/expt/fc:archive_tasks
+            event fdb
+          task sfc
+            edit MEM '2560'
+            inlimit /user/expt/fc:archive_tasks
+            event fdb
+          task wave
+            edit MEM '2560'
+            inlimit /user/expt/fc:archive_tasks
+            event fdb
+        endfamily
+        family satim
+          trigger archive/ml eq complete
+          edit MEM '10240'
+          limit satim 5
+          inlimit /user/expt/fc/lag/satim:satim
+          family satim_0
+            edit IMAGETIME '0'
+            edit WMOID 'undef'
+            family retr
+              edit SATIM_MODE '1'
+              task satimsim
+            endfamily
+            family sat
+              trigger retr eq complete
+              edit SATIM_MODE '2'
+              family sat_54
+                edit WMOID '54'
+                task satimsim
+              endfamily
+              family sat_57
+                edit WMOID '57'
+                task satimsim
+              endfamily
+              family sat_172
+                edit WMOID '172'
+                task satimsim
+              endfamily
+              family sat_259
+                edit WMOID '259'
+                task satimsim
+              endfamily
+              family sat_257
+                edit WMOID '257'
+                task satimsim
+              endfamily
+            endfamily
+            family satim_flush
+              trigger sat eq complete
+              edit SATIM_MODE '3'
+              task satimsim
+            endfamily
+          endfamily
+          family satim_3
+            edit IMAGETIME '3'
+            edit WMOID 'undef'
+            family retr
+              edit SATIM_MODE '1'
+              task satimsim
+            endfamily
+            family sat
+              trigger retr eq complete
+              edit SATIM_MODE '2'
+              family sat_54
+                edit WMOID '54'
+                task satimsim
+              endfamily
+              family sat_57
+                edit WMOID '57'
+                task satimsim
+              endfamily
+              family sat_172
+                edit WMOID '172'
+                task satimsim
+              endfamily
+              family sat_259
+                edit WMOID '259'
+                task satimsim
+              endfamily
+              family sat_257
+                edit WMOID '257'
+                task satimsim
+              endfamily
+            endfamily
+            family satim_flush
+              trigger sat eq complete
+              edit SATIM_MODE '3'
+              task satimsim
+            endfamily
+          endfamily
+          family satim_6
+            edit IMAGETIME '6'
+            edit WMOID 'undef'
+            family retr
+              edit SATIM_MODE '1'
+              task satimsim
+            endfamily
+            family sat
+              trigger retr eq complete
+              edit SATIM_MODE '2'
+              family sat_54
+                edit WMOID '54'
+                task satimsim
+              endfamily
+              family sat_57
+                edit WMOID '57'
+                task satimsim
+              endfamily
+              family sat_172
+                edit WMOID '172'
+                task satimsim
+              endfamily
+              family sat_259
+                edit WMOID '259'
+                task satimsim
+              endfamily
+              family sat_257
+                edit WMOID '257'
+                task satimsim
+              endfamily
+            endfamily
+            family satim_flush
+              trigger sat eq complete
+              edit SATIM_MODE '3'
+              task satimsim
+            endfamily
+          endfamily
+          family satim_9
+            edit IMAGETIME '9'
+            edit WMOID 'undef'
+            family retr
+              edit SATIM_MODE '1'
+              task satimsim
+            endfamily
+            family sat
+              trigger retr eq complete
+              edit SATIM_MODE '2'
+              family sat_54
+                edit WMOID '54'
+                task satimsim
+              endfamily
+              family sat_57
+                edit WMOID '57'
+                task satimsim
+              endfamily
+              family sat_172
+                edit WMOID '172'
+                task satimsim
+              endfamily
+              family sat_259
+                edit WMOID '259'
+                task satimsim
+              endfamily
+              family sat_257
+                edit WMOID '257'
+                task satimsim
+              endfamily
+            endfamily
+            family satim_flush
+              trigger sat eq complete
+              edit SATIM_MODE '3'
+              task satimsim
+            endfamily
+          endfamily
+          family satim_12
+            edit IMAGETIME '12'
+            edit WMOID 'undef'
+            family retr
+              edit SATIM_MODE '1'
+              task satimsim
+            endfamily
+            family sat
+              trigger retr eq complete
+              edit SATIM_MODE '2'
+              family sat_54
+                edit WMOID '54'
+                task satimsim
+              endfamily
+              family sat_57
+                edit WMOID '57'
+                task satimsim
+              endfamily
+              family sat_172
+                edit WMOID '172'
+                task satimsim
+              endfamily
+              family sat_259
+                edit WMOID '259'
+                task satimsim
+              endfamily
+              family sat_257
+                edit WMOID '257'
+                task satimsim
+              endfamily
+            endfamily
+            family satim_flush
+              trigger sat eq complete
+              edit SATIM_MODE '3'
+              task satimsim
+            endfamily
+          endfamily
+          task archive_satim
+            trigger (((satim_0 eq complete and satim_3 eq complete) and satim_6 eq complete) and satim_9 eq complete) and satim_12 eq complete
+            edit PRIORITY '50'
+        endfamily
+        family clean
+          trigger (((check_periods eq complete and mmeans eq complete) and verify eq complete) and archive eq complete) and satim eq complete
+          edit ARCHTYPE 'fc'
+          task flush
+            edit ECF_JOB_CMD 'pifssubmit %ECF_JOB% %WSHOST% %USER%'
+            edit ECF_KILL_CMD 'pifskill %ECF_JOB%'
+            edit ECF_OUT '/vol/ifs_sms/rd'
+            edit ECF_STATUS_CMD 'true'
+            edit LOGDIR '/vol/ifs_sms/rd'
+            edit QUEUE 'rdverify'
+            label host "workstation"
+          task clean
+            trigger flush eq complete
+            edit ECF_TRIES '1'
+        endfamily
+        task logfiles
+          trigger ((((check_periods eq complete and mmeans eq complete) and verify eq complete) and archive eq complete) and satim eq complete) and clean eq complete
+          edit ECF_JOB_CMD 'pifssubmit %ECF_JOB% %SCHOST% %USER%'
+          edit ECF_KILL_CMD 'pifskill %ECF_JOB%'
+          edit ECF_OUT '/vol/ifs_sms/rd'
+          edit ECF_STATUS_CMD 'true'
+          edit LOGDIR '/fws7/sb/log/rd'
+          edit THREAD_STACKSIZE_MB '399'
+      endfamily
+    endfamily
+    family cancel
+      trigger fc eq complete
+      edit FSFAMILY 'cancel'
+      edit HOUR '0'
+      edit YMD '2017050200'
+      family archive
+        task archive_scripts
+          defstatus complete
+        task archive_source
+          defstatus complete
+      endfamily
+      task wipefdb
+      task deletefws
+        trigger wipefdb eq complete and archive eq complete
+      task cancel
+        trigger (archive eq complete and wipefdb eq complete) and deletefws eq complete
+        edit ECF_JOB_CMD 'pifssubmit %ECF_JOB% %WSHOST% %USER%'
+        edit ECF_KILL_CMD 'pifskill %ECF_JOB%'
+        edit ECF_OUT '/vol/ifs_sms/rd'
+        edit ECF_STATUS_CMD 'true'
+        edit ECF_TRIES '3'
+        edit LOGDIR '/vol/ifs_sms/rd'
+        edit QUEUE 'rdverify'
+        label host "workstation"
+    endfamily
+  endfamily
+endsuite
+# enddef
