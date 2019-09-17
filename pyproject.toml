@@ -1,0 +1,14 @@
+[build-system]
+requires = ["flit"]
+build-backend = "flit.buildapi"
+
+[tool.flit.metadata]
+module = "cleverdiff"
+author = "Andrew Bennett"
+author-email = "chudleigh.rivet@gmail.com"
+home-page = "https://github.com/andrewcbennett/cleverdiff"
+classifiers = ["License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)"]
+requires-python = ">=3.6"
+
+[tool.flit.scripts]
+cleverdiff = "cleverdiff.cleverdiff:main"
