@@ -65,7 +65,10 @@ def summarise_results(diffseen, diffresult):
     return result
 
 
-def main(infilepairs):
+def main(infilepairs=None):
+    if infilepairs is None:
+        infilepairs = sys.argv[1:]
+
     diffseen = []
     diffresult = []
     filepairs = [item.split("=") for item in infilepairs]
