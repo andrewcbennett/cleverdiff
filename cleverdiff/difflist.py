@@ -82,7 +82,7 @@ class DiffList(object):
         file1 : str
             The filename of the first file.
         
-        file1 : str
+        file2 : str
             The filename of the second file.
 
         Returns
