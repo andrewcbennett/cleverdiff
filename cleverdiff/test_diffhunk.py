@@ -1,8 +1,9 @@
-from __future__ import (absolute_import, division, print_function)  # noqa
+from __future__ import absolute_import, division, print_function  # noqa
 
 import textwrap
 
 from cleverdiff.diffhunk import DiffHunk, Pair
+
 
 class Test_diffhunk(object):
     CONTEXT = Pair("file1", "file2")
@@ -11,10 +12,12 @@ class Test_diffhunk(object):
         mode = "insert"
         content = "+  I'm added"
         lines = Pair(34, 34)
-        expected = textwrap.dedent("""\
+        expected = textwrap.dedent(
+            """\
             insert in file1:34 vs file2:34:
             +  I'm added
-        """)
+        """
+        )
         actual = str(DiffHunk(mode, content, self.CONTEXT, lines))
         assert expected == actual
 
@@ -22,11 +25,13 @@ class Test_diffhunk(object):
         mode = "delete"
         content = "-    deleteme\n- and me!"
         lines = Pair(56, 55)
-        expected = textwrap.dedent("""\
+        expected = textwrap.dedent(
+            """\
             delete in file1:56 vs file2:55:
             -    deleteme
             - and me!
-        """)
+        """
+        )
         actual = str(DiffHunk(mode, content, self.CONTEXT, lines))
         assert expected == actual
 
@@ -34,11 +39,13 @@ class Test_diffhunk(object):
         mode = "change"
         content = "- line removed\n+ line inserted"
         lines = Pair(1, 2)
-        expected = textwrap.dedent("""\
+        expected = textwrap.dedent(
+            """\
             change in file1:1 vs file2:2:
             - line removed
             + line inserted
-        """)
+        """
+        )
         actual = str(DiffHunk(mode, content, self.CONTEXT, lines))
         assert expected == actual
 

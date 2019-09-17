@@ -1,4 +1,4 @@
-from __future__ import (absolute_import, division, print_function)  # noqa
+from __future__ import absolute_import, division, print_function  # noqa
 
 import difflib
 
@@ -20,8 +20,7 @@ class DiffList(object):
         self._secondlabel = label2
 
         # Compute and parse differences.
-        self._diffs = self._parse(difflib.unified_diff(self._first,
-                                                       self._second, n=0))
+        self._diffs = self._parse(difflib.unified_diff(self._first, self._second, n=0))
 
     @classmethod
     def _translate_diff_syntax(cls, syntax):
@@ -42,6 +41,7 @@ class DiffList(object):
             and the two integers are the start line from each input.
         """
         import re
+
         pattern = re.compile(r"^@@ -(\d+)(,(\d*))? \+(\d+)(,(\d*))? @@$")
         result = pattern.match(syntax)
         try:
@@ -119,16 +119,19 @@ class DiffList(object):
         mode = ""
         line1 = line2 = 0
         for diff_line in input_lines:
-            if diff_line.startswith('---'):
+            if diff_line.startswith("---"):
                 continue
-            elif diff_line.startswith('+++'):
+            elif diff_line.startswith("+++"):
                 continue
             elif diff_line.startswith("@@"):
                 if mode:
                     lines = Pair(first=line1, second=line2)
-                    hunk_obj = DiffHunk(mode=mode, content=hunk_content,
-                                        context=Pair(first=self._firstlabel, second=self._secondlabel),
-                                        lines=lines)
+                    hunk_obj = DiffHunk(
+                        mode=mode,
+                        content=hunk_content,
+                        context=Pair(first=self._firstlabel, second=self._secondlabel),
+                        lines=lines,
+                    )
                     difflist.append(hunk_obj)
 
                 # next hunk...
@@ -137,9 +140,12 @@ class DiffList(object):
             else:
                 hunk_content += diff_line
 
-        hunk_obj = DiffHunk(mode=mode, content=hunk_content,
-                            context=Pair(first=self._firstlabel, second=self._secondlabel),
-                            lines=Pair(first=line1, second=line2))
+        hunk_obj = DiffHunk(
+            mode=mode,
+            content=hunk_content,
+            context=Pair(first=self._firstlabel, second=self._secondlabel),
+            lines=Pair(first=line1, second=line2),
+        )
         difflist.append(hunk_obj)
 
         return difflist
