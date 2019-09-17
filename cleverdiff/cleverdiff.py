@@ -1,18 +1,21 @@
-from __future__ import (absolute_import, division, print_function)  # noqa
+from __future__ import absolute_import, division, print_function  # noqa
 
 import sys
 import collections
 
 from .difflist import DiffList
 
-DiffRecord = collections.namedtuple('DiffRecord',
-                                    'diffitem controlindex diffmode')
+DiffRecord = collections.namedtuple("DiffRecord", "diffitem controlindex diffmode")
 
 
 def contexts(diffitem):
     msg = "{} (line {}) to {} (line {})"
-    return msg.format(diffitem.contexts.first, diffitem.lines.first,
-                      diffitem.contexts.second, diffitem.lines.second)
+    return msg.format(
+        diffitem.contexts.first,
+        diffitem.lines.first,
+        diffitem.contexts.second,
+        diffitem.lines.second,
+    )
 
 
 def summarise_results(diffseen, diffresult):
@@ -40,10 +43,9 @@ def summarise_results(diffseen, diffresult):
     }
 
     result = ""
-    for seenindex, seenitem, in enumerate(diffseen):
+    for seenindex, seenitem in enumerate(diffseen):
         result += "--------------------------------------------\n"
-        result += (f"DIFF {seenindex:3d}:\n"
-                   f"{str(seenitem)}")
+        result += f"DIFF {seenindex:3d}:\n" f"{str(seenitem)}"
         result2 = {key: [] for key in MODE_DESCRIPTION.keys()}
         for hunk2, controlindex, mode in diffresult:
             if controlindex != seenindex:
@@ -78,15 +80,13 @@ def main(infilepairs=None):
         for diffitem in difflist.diffs:
             found = False
             if len(diffseen) > 0:
-                for seenindex, seenitem, in enumerate(diffseen):
+                for seenindex, seenitem in enumerate(diffseen):
                     cmp = diffitem.compare(seenitem)
                     if cmp < 2:
                         found = True
                         diffresult.append(
                             DiffRecord(
-                                diffitem=diffitem,
-                                controlindex=seenindex,
-                                diffmode=cmp,
+                                diffitem=diffitem, controlindex=seenindex, diffmode=cmp
                             )
                         )
                         break
@@ -95,5 +95,3 @@ def main(infilepairs=None):
                 diffseen.append(diffitem)
 
     print(summarise_results(diffseen, diffresult))
-
-
