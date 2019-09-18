@@ -120,7 +120,7 @@ class DiffList(object):
 
         Arguments
         ---------
-        input_lines : list
+        input_lines : list of str
             A list of strings containing a sequence of differences to parse.
             Must be in GNU unified diff format, defined at:
             https://www.gnu.org/software/diffutils/manual/html_node/Detailed-Unified.html#Detailed-Unified

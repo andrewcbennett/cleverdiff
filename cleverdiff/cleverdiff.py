@@ -4,18 +4,9 @@ import sys
 import collections
 
 from .difflist import DiffList
+from .contexts import EcflowContext
 
 DiffRecord = collections.namedtuple("DiffRecord", "diffitem controlindex diffmode")
-
-
-def contexts(diffitem):
-    msg = "{} (line {}) to {} (line {})"
-    return msg.format(
-        diffitem.contexts.first,
-        diffitem.lines.first,
-        diffitem.contexts.second,
-        diffitem.lines.second,
-    )
 
 
 def summarise_results(diffseen, diffresult):
