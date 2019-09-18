@@ -1,4 +1,6 @@
 class DefaultContext:
+    DESCRIPTION = "unformatted text file"
+
     def __init__(self, filename):
         self.label = filename
 
@@ -7,6 +9,8 @@ class DefaultContext:
 
 
 class EcflowContext:
+    DESCRIPTION = "ecFlow suite definition"
+
     def __init__(self, filename):
         self.label = filename
         with open(filename, "rt") as f:
@@ -52,3 +56,12 @@ class EcflowContext:
 
     def __getitem__(self, item):
         return f"{self.label}:{self._context[item]}"
+
+
+EXTENSION_MAPPING = {
+    ".def": EcflowContext,
+}
+
+
+def lookup_extension(extension):
+    return EXTENSION_MAPPING.get(extension, DefaultContext)

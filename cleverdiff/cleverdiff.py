@@ -1,10 +1,11 @@
 from __future__ import absolute_import, division, print_function  # noqa
 
 import sys
+import os.path
 import collections
 
 from .difflist import DiffList
-from .contexts import EcflowContext
+from .contexts import DefaultContext, lookup_extension
 
 DiffRecord = collections.namedtuple("DiffRecord", "diffitem controlindex diffmode")
 
@@ -58,16 +59,12 @@ def summarise_results(diffseen, diffresult):
     return result
 
 
-def main(infilepairs=None):
-    if infilepairs is None:
-        infilepairs = sys.argv[1:]
-
+def main_diff(filepairs, context_cls=None):
     diffseen = []
     diffresult = []
-    filepairs = [item.split("=") for item in infilepairs]
 
     for lhs, rhs in filepairs:
-        difflist = DiffList.from_files(lhs, rhs)
+        difflist = DiffList.from_files(lhs, rhs, context_cls)
         for diffitem in difflist.diffs:
             found = False
             if len(diffseen) > 0:
@@ -86,3 +83,21 @@ def main(infilepairs=None):
                 diffseen.append(diffitem)
 
     print(summarise_results(diffseen, diffresult))
+
+
+def main(in_file_pairs=None):
+    if in_file_pairs is None:
+        in_file_pairs = sys.argv[1:]
+    file_pairs = [item.split("=") for item in in_file_pairs]
+
+    if not in_file_pairs:
+        raise ValueError("insufficient arguments")
+
+    exts = [os.path.splitext(f)[-1] for file_pair in file_pairs for f in file_pair]
+    if len(set(exts)) > 1:
+        context_cls = DefaultContext
+    else:
+        context_cls = lookup_extension(exts[0])
+
+    print(f"detected {context_cls.DESCRIPTION}")
+    main_diff(file_pairs, context_cls=context_cls)
