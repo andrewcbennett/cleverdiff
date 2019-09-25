@@ -349,19 +349,19 @@ class Test_DiffList__parse(object):
                 call(
                     mode="change",
                     content="-oldline\n+newline\n",
-                    context=Pair(first="", second=""),
+                    context=Pair(first=":2", second=":2"),
                     lines=Pair(2, 2),
                 ),
                 call(
                     mode="delete",
                     content="-deleteme\n",
-                    context=Pair(first="", second=""),
+                    context=Pair(first=":4", second=":3"),
                     lines=Pair(4, 3),
                 ),
                 call(
                     mode="insert",
                     content="+insertme\n",
-                    context=Pair(first="", second=""),
+                    context=Pair(first=":5", second=":5"),
                     lines=Pair(5, 5),
                 ),
             ]

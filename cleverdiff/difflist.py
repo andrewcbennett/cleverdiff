@@ -3,12 +3,13 @@ from __future__ import absolute_import, division, print_function  # noqa
 import difflib
 
 from cleverdiff.diffhunk import DiffHunk, Pair
+from cleverdiff.contexts import DefaultContext
 
 
 class DiffList(object):
     """A class to contain lists of differences between two strings."""
 
-    def __init__(self, string1, string2, label1="", label2=""):
+    def __init__(self, string1, string2, label1="", label2="", context_objects=None):
         """Initialise a DiffList object."""
 
         super(DiffList, self).__init__()
@@ -18,6 +19,13 @@ class DiffList(object):
         self._second = string2.splitlines(True)
         self._firstlabel = label1
         self._secondlabel = label2
+
+        # Initialise objects to manage context.
+        if context_objects is None:
+            self._firstcontext = DefaultContext(label1)
+            self._secondcontext = DefaultContext(label2)
+        else:
+            self._firstcontext, self._secondcontext = context_objects
 
         # Compute and parse differences.
         self._diffs = self._parse(difflib.unified_diff(self._first, self._second, n=0))
@@ -72,7 +80,7 @@ class DiffList(object):
         return mode, start1, start2
 
     @classmethod
-    def from_files(cls, file1, file2):
+    def from_files(cls, file1, file2, context_cls=None):
         """
         Construct a DiffList object from the differences between two
         files.
@@ -85,14 +93,23 @@ class DiffList(object):
         file2 : str
             The filename of the second file.
 
+        context_cls : type, optional
+            A class which will be instantiated for each of the filenames
+            above, and will provide the human-readable context of lines.
+            If not provided, defaults to DefaultContext.
+
         Returns
         -------
         DiffList
             An object representing the differences between the given files.
         """
+        if context_cls is None:
+            context_cls = DefaultContext
+
         try:
             with open(file1, "rt") as f1, open(file2, "rt") as f2:
-                return cls(f1.read(), f2.read(), label1=file1, label2=file2)
+                return cls(f1.read(), f2.read(), label1=file1, label2=file2,
+                           context_objects=[context_cls(file1), context_cls(file2)])
         except IOError as excinfo:
             msg = "failed to load from file {}: {}"
             raise IOError(msg.format(excinfo.filename, excinfo))
@@ -103,7 +120,7 @@ class DiffList(object):
 
         Arguments
         ---------
-        input_lines : list
+        input_lines : list of str
             A list of strings containing a sequence of differences to parse.
             Must be in GNU unified diff format, defined at:
             https://www.gnu.org/software/diffutils/manual/html_node/Detailed-Unified.html#Detailed-Unified
@@ -125,12 +142,11 @@ class DiffList(object):
                 continue
             elif diff_line.startswith("@@"):
                 if mode:
-                    lines = Pair(first=line1, second=line2)
                     hunk_obj = DiffHunk(
                         mode=mode,
                         content=hunk_content,
-                        context=Pair(first=self._firstlabel, second=self._secondlabel),
-                        lines=lines,
+                        context=Pair(first=self._firstcontext[line1], second=self._secondcontext[line2]),
+                        lines=Pair(first=line1, second=line2),
                     )
                     difflist.append(hunk_obj)
 
@@ -143,7 +159,7 @@ class DiffList(object):
         hunk_obj = DiffHunk(
             mode=mode,
             content=hunk_content,
-            context=Pair(first=self._firstlabel, second=self._secondlabel),
+            context=Pair(first=self._firstcontext[line1], second=self._secondcontext[line2]),
             lines=Pair(first=line1, second=line2),
         )
         difflist.append(hunk_obj)
