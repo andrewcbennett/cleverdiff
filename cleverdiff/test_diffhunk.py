@@ -6,9 +6,9 @@ from cleverdiff.diffhunk import DiffHunk, Pair
 
 
 class Test_diffhunk(object):
-    CONTEXT = Pair("file1", "file2")
 
     def test_str_insert(self):
+        context = Pair("file1:34", "file2:34")
         mode = "insert"
         content = "+  I'm added"
         lines = Pair(34, 34)
@@ -18,10 +18,11 @@ class Test_diffhunk(object):
             +  I'm added
         """
         )
-        actual = str(DiffHunk(mode, content, self.CONTEXT, lines))
+        actual = str(DiffHunk(mode, content, context, lines))
         assert expected == actual
 
     def test_str_delete(self):
+        context = Pair("file1:56", "file2:55")
         mode = "delete"
         content = "-    deleteme\n- and me!"
         lines = Pair(56, 55)
@@ -32,10 +33,11 @@ class Test_diffhunk(object):
             - and me!
         """
         )
-        actual = str(DiffHunk(mode, content, self.CONTEXT, lines))
+        actual = str(DiffHunk(mode, content, context, lines))
         assert expected == actual
 
     def test_str_change(self):
+        context = Pair("file1:1", "file2:2")
         mode = "change"
         content = "- line removed\n+ line inserted"
         lines = Pair(1, 2)
@@ -46,7 +48,7 @@ class Test_diffhunk(object):
             + line inserted
         """
         )
-        actual = str(DiffHunk(mode, content, self.CONTEXT, lines))
+        actual = str(DiffHunk(mode, content, context, lines))
         assert expected == actual
 
 

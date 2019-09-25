@@ -36,7 +36,7 @@ class DiffHunk(object):
     def context_to_string(self, no_labels=False):
         context1 = "" if no_labels else self.context.first
         context2 = "" if no_labels else self.context.second
-        return f"{context1}:{self.lines.first} vs {context2}:{self.lines.second}"
+        return f"{context1} vs {context2}"
 
     def __str__(self):
         return f"{self.mode} in {self.context_to_string()}:\n{self.content}\n"
