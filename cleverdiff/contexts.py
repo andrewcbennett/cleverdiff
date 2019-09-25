@@ -12,11 +12,11 @@ class DefaultContext:
     DESCRIPTION = "unformatted text file"
 
     def __init__(self, filename):
-        self.filename = filename
+        self._filename = filename
 
-    def __getitem__(self, line):
+    def __getitem__(self, line_number):
         """Returns the filename and given line number as a string."""
-        return f"{self.filename}:{line}"
+        return f"{self._filename}:{line_number}"
 
 
 class EcflowContext:
@@ -28,8 +28,8 @@ class EcflowContext:
     DESCRIPTION = "ecFlow suite definition"
 
     def __init__(self, filename):
-        self.filename = filename
-        with open(filename, "rt") as f:
+        self._filename = filename
+        with open(self._filename, "rt") as f:
             self._context = self._create_context(f.read().splitlines())
 
     @classmethod
@@ -72,8 +72,9 @@ class EcflowContext:
 
         return result
 
-    def __getitem__(self, item):
-        return f"{self.filename}:{self._context[item]}"
+    def __getitem__(self, line_number):
+        """Return the filename and path of the current node at the given line number."""
+        return f"{self._filename}:{self._context[line_number]}"
 
 
 # A dict mapping filename extensions to context classes
