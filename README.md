@@ -53,4 +53,7 @@ This difference is replicated elsewhere:
     ref2.def:487 vs new2.def:488
 ```
 
-
+## Version history
+**v0.2**: Introduces ecFlow context (#2). Bug fixes.
+**v0.1.2**: Fixes failing tests. Adds Travis CI config.
+**v0.1**: initial version 
