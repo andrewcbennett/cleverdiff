@@ -18,6 +18,13 @@ Run the `cleverdiff.py` script, with each pair of files separated with `=` as ar
 python3 cleverdiff.py test_data/ref1.def=test_data/new1.def test_data/ref2.def=test_data/new2.def
 ```
 
+Or run the cleverdiff.py script, with --old followed by a list of reference files and --new followed by a list of modified files:
+
+```console
+python3 cleverdiff.py --old test_data/ref.def test_data/ref2.def \
+                      --new test_data/new.def test_data/new2.def
+```
+
 *CleverDiff* will find the differences between each pair of files, then determine which are identical across all files, and give you a summary:
 
 ```
@@ -56,4 +63,4 @@ This difference is replicated elsewhere:
 ## Version history
 **v0.2**: Introduces ecFlow context (#2). Bug fixes.
 **v0.1.2**: Fixes failing tests. Adds Travis CI config.
-**v0.1**: initial version 
+**v0.1**: initial version
