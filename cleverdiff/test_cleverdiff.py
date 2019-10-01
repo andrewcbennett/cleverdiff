@@ -15,16 +15,15 @@ class TestArguments:
                 main()
         assert "No files specified" in str(excinfo.value)
 
+    @pytest.mark.parametrize("test_input", ["--new file", "--old file"])
+    def test_forget_one(self, test_input):
+        with mock.patch("sys.argv", [""] + test_input.split()):
+            with pytest.raises(ValueError) as excinfo:
+                main()
+        assert "Both --old and --new" in str(excinfo.value)
+
     @pytest.mark.parametrize(
-        "test_input",
-        [
-            "--old file",
-            "--old file --new",
-            "--new file",
-            "--old --new file",
-            "--old file --new file file2",
-            "--old file file2 --new file",
-        ],
+        "test_input", ["--old file --new file file2", "--old file file2 --new file"]
     )
     def test_imbalance(self, test_input):
         with mock.patch("sys.argv", [""] + test_input.split()):

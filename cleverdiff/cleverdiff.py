@@ -128,6 +128,10 @@ def main():
     args = parser.parse_args()
     if not args.old_files and not args.new_files and not args.files_pairs:
         raise ValueError("No files specified")
+    if (args.old_files and not args.new_files) or (
+        args.new_files and not args.old_files
+    ):
+        raise ValueError("Both --old and --new arguments must be specified")
     if len(args.old_files) != len(args.new_files):
         raise ValueError("The number of reference and modified files must be equal")
     file_pairs = args.files_pairs
