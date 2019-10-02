@@ -3,6 +3,7 @@ from __future__ import absolute_import, division, print_function  # noqa
 import sys
 import os.path
 import collections
+import argparse
 
 from .difflist import DiffList
 from .contexts import DefaultContext, lookup_extension
@@ -85,14 +86,56 @@ def main_diff(filepairs, context_cls=None):
     print(summarise_results(diffseen, diffresult))
 
 
-def main(in_file_pairs=None):
-    if in_file_pairs is None:
-        in_file_pairs = sys.argv[1:]
-    file_pairs = [item.split("=") for item in in_file_pairs]
+def main():
+    parser = argparse.ArgumentParser(
+        prog="cleverdiff",
+        description="A tool for describing multiple differences in files",
+    )
+    pairs = parser.add_argument_group("list of file pairs")
 
-    if not in_file_pairs:
-        raise ValueError("insufficient arguments")
+    def file_pair(string):
+        pair = string.split("=")
+        if len(pair) != 2 or "" in pair:
+            raise ValueError
+        return pair
 
+    pairs.add_argument(
+        "files_pairs",
+        metavar="file1=file2",
+        type=file_pair,
+        nargs="*",
+        help="pair of files separated with '='",
+    )
+    old_new = parser.add_argument_group("or separately")
+    old_new.add_argument(
+        "--old",
+        dest="old_files",
+        default=[],
+        metavar="file",
+        type=str,
+        nargs="*",
+        help="list of reference files",
+    )
+    old_new.add_argument(
+        "--new",
+        dest="new_files",
+        default=[],
+        metavar="file",
+        type=str,
+        nargs="*",
+        help="list of modified files",
+    )
+    args = parser.parse_args()
+    if not args.old_files and not args.new_files and not args.files_pairs:
+        raise ValueError("No files specified")
+    if (args.old_files and not args.new_files) or (
+        args.new_files and not args.old_files
+    ):
+        raise ValueError("Both --old and --new arguments must be specified")
+    if len(args.old_files) != len(args.new_files):
+        raise ValueError("The number of reference and modified files must be equal")
+    file_pairs = args.files_pairs
+    file_pairs += list(zip(args.old_files, args.new_files))
     exts = [os.path.splitext(f)[-1] for file_pair in file_pairs for f in file_pair]
     if len(set(exts)) > 1:
         context_cls = DefaultContext
