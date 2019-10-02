@@ -6,5 +6,5 @@ install:
   - pip install pylint flake8
 script:
   - pytest
-  - pylint
-  - flake8
+  - pylint cleverdiff --disable=bad-continuation
+  - flake8 cleverdiff
