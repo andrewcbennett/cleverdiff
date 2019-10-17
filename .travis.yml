@@ -7,5 +7,5 @@ install:
 script:
   - pytest
   - isort --check-only --recursive cleverdiff
-  - black --check cleverdiff
+  - black --check --diff cleverdiff
   - pyflakes cleverdiff
