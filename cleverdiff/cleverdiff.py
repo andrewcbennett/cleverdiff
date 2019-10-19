@@ -1,12 +1,11 @@
 from __future__ import absolute_import, division, print_function  # noqa
 
-import sys
-import os.path
-import collections
 import argparse
+import collections
+import os.path
 
-from .difflist import DiffList
 from .contexts import DefaultContext, lookup_extension
+from .difflist import DiffList
 
 DiffRecord = collections.namedtuple("DiffRecord", "diffitem controlindex diffmode")
 

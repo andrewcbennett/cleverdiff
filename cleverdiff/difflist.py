@@ -2,8 +2,8 @@ from __future__ import absolute_import, division, print_function  # noqa
 
 import difflib
 
-from cleverdiff.diffhunk import DiffHunk, Pair
 from cleverdiff.contexts import DefaultContext
+from cleverdiff.diffhunk import DiffHunk, Pair
 
 
 class DiffList(object):
@@ -108,8 +108,13 @@ class DiffList(object):
 
         try:
             with open(file1, "rt") as f1, open(file2, "rt") as f2:
-                return cls(f1.read(), f2.read(), label1=file1, label2=file2,
-                           context_objects=[context_cls(file1), context_cls(file2)])
+                return cls(
+                    f1.read(),
+                    f2.read(),
+                    label1=file1,
+                    label2=file2,
+                    context_objects=[context_cls(file1), context_cls(file2)],
+                )
         except IOError as excinfo:
             msg = "failed to load from file {}: {}"
             raise IOError(msg.format(excinfo.filename, excinfo))
@@ -145,7 +150,10 @@ class DiffList(object):
                     hunk_obj = DiffHunk(
                         mode=mode,
                         content=hunk_content,
-                        context=Pair(first=self._firstcontext[line1], second=self._secondcontext[line2]),
+                        context=Pair(
+                            first=self._firstcontext[line1],
+                            second=self._secondcontext[line2],
+                        ),
                         lines=Pair(first=line1, second=line2),
                     )
                     difflist.append(hunk_obj)
@@ -159,7 +167,9 @@ class DiffList(object):
         hunk_obj = DiffHunk(
             mode=mode,
             content=hunk_content,
-            context=Pair(first=self._firstcontext[line1], second=self._secondcontext[line2]),
+            context=Pair(
+                first=self._firstcontext[line1], second=self._secondcontext[line2]
+            ),
             lines=Pair(first=line1, second=line2),
         )
         difflist.append(hunk_obj)
