@@ -343,7 +343,7 @@ class Test_DiffList__parse(object):
         with patch("cleverdiff.difflist.DiffHunk") as diffhunk_patch, patch(
             "cleverdiff.difflist.DiffHunk._translate_diff_syntax",
             return_value=[("change", 2, 2), ("delete", 4, 3), ("insert", 5, 5)],
-        ) as trans_patch:
+        ):
             difflist._parse(input_lines)
 
             expected_calls = [

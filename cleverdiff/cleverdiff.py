@@ -3,7 +3,6 @@ from __future__ import absolute_import, division, print_function  # noqa
 import argparse
 import collections
 import os.path
-import sys
 
 from .contexts import DefaultContext, lookup_extension
 from .difflist import DiffList
