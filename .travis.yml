@@ -2,6 +2,10 @@ language: python
 python:
   - "3.6"
   - "3.7"
-
+install:
+  - pip install isort black pyflakes
 script:
-  pytest
+  - pytest
+  - isort --check-only --recursive cleverdiff
+  - black --check --diff cleverdiff
+  - pyflakes cleverdiff
