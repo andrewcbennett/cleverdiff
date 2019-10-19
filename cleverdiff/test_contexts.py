@@ -1,5 +1,6 @@
 import tempfile
 import textwrap
+
 from mock import patch
 
 from cleverdiff.contexts import DefaultContext, EcflowContext

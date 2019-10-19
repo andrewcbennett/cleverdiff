@@ -2,8 +2,8 @@ from __future__ import absolute_import, division, print_function  # noqa
 
 import difflib
 
-from cleverdiff.diffhunk import DiffHunk, Pair
 from cleverdiff.contexts import DefaultContext
+from cleverdiff.diffhunk import DiffHunk, Pair
 
 
 class DiffList(object):

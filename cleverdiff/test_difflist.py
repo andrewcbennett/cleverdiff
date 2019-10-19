@@ -1,11 +1,12 @@
 from __future__ import absolute_import, division, print_function  # noqa
 
-import textwrap
 import difflib
-import pytest
-import tempfile
 import os
-from mock import patch, call
+import tempfile
+import textwrap
+
+import pytest
+from mock import call, patch
 
 from cleverdiff.diffhunk import Pair
 from cleverdiff.difflist import DiffList
