@@ -61,6 +61,20 @@ This difference is replicated elsewhere:
 ```
 
 ## Version history
-**v0.2**: Introduces ecFlow context (#2). Bug fixes.
-**v0.1.2**: Fixes failing tests. Adds Travis CI config.
-**v0.1**: initial version
+
+### v0.3
+Contributors: @vhsw
+* Add command-line arguments `--old` and `--new` (#7)
+* Add black, isort & pyflakes to CI tests (#4)
+
+### v0.2
+Contributors: @andrewcbennett
+Introduces ecFlow context (#2). Bug fixes.
+
+### v0.1.2
+Contributors: @andrewcbennett (with thanks to @takluyver)
+Fixes failing tests. Adds Travis CI config.
+
+### v0.1
+Contributors: @andrewcbennett (with thanks to @takluyver)
+initial version
