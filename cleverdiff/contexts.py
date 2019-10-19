@@ -9,6 +9,7 @@ to specify how to translate line numbers into human-readable strings.
 
 class DefaultContext:
     """A generic context which just returns line numbers."""
+
     DESCRIPTION = "unformatted text file"
 
     def __init__(self, filename):
@@ -25,6 +26,7 @@ class EcflowContext:
     documented at
     https://confluence.ecmwf.int/display/ECFLOW/Definition+file+Grammar.
     """
+
     DESCRIPTION = "ecFlow suite definition"
 
     def __init__(self, filename):
@@ -59,16 +61,16 @@ class EcflowContext:
                 keyword, value = line.split()
             except ValueError:
                 keyword = line
-                value = ''
-            if keyword in ['endsuite', 'endfamily']:
+                value = ""
+            if keyword in ["endsuite", "endfamily"]:
                 stack.pop()
-            if keyword in ['suite', 'family', 'task']:
-                if last_kw == 'task':
+            if keyword in ["suite", "family", "task"]:
+                if last_kw == "task":
                     stack.pop()
                 last_kw = keyword
                 stack.append(value)
 
-            result.append('/'.join(stack))
+            result.append("/".join(stack))
 
         return result
 
@@ -78,9 +80,7 @@ class EcflowContext:
 
 
 # A dict mapping filename extensions to context classes
-EXTENSION_MAPPING = {
-    ".def": EcflowContext,
-}
+EXTENSION_MAPPING = {".def": EcflowContext}
 
 
 def lookup_extension(extension):

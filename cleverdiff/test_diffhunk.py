@@ -6,7 +6,6 @@ from cleverdiff.diffhunk import DiffHunk, Pair
 
 
 class Test_diffhunk(object):
-
     def test_str_insert(self):
         context = Pair("file1:34", "file2:34")
         mode = "insert"
