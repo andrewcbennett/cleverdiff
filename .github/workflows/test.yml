@@ -10,7 +10,7 @@ jobs:
            with:
                python-version: '3.x'
          - name: Install dependencies
-           run: python -m pip install pytest isort black pyflakes
+           run: python -m pip install mock pytest isort black pyflakes
          - name: Run tests
            run: python -m pytest
          - name: Check import are sorted
