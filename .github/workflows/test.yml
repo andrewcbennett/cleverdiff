@@ -16,7 +16,7 @@ jobs:
          - name: Check import are sorted
            run: isort --check-only --recursive .
          - name: Check code formatting
-           run: black --check .
+           run: black --diff --color .
          - name: Check for flaky code
            run: pyflakes .
 
