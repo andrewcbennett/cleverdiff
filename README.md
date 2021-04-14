@@ -7,7 +7,7 @@
 [![issues for beginners](https://img.shields.io/github/issues-raw/andrewcbennett/cleverdiff/good%20first%20issue?color=dark+green&label=issues+for+beginners)](https://github.com/andrewcbennett/cleverdiff/issues?q=is%3Aopen+is:issue+label:"good+first+issue")
 
 # CleverDiff
-A tool for describing multiple differences in files.
+A command-line tool for succinctly describing multiple differences in files.
 
 ## Why?
 If you have to compare files which contain multiple differences that are the same, you will know how tedious it is to step through every single hunk of the standard `diff` output. *CleverDiff* will show you each unique diff hunk once, then give you a summary of where else it has found the difference across multiple files.
