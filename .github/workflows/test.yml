@@ -14,9 +14,9 @@ jobs:
          - name: Run tests
            run: python -m pytest
          - name: Check imports are sorted
-           run: isort --check-only --recursive .
+           run: isort --check-only cleverdiff
          - name: Check code formatting
-           run: black --check --diff --color .
+           run: black --check --diff --color cleverdiff
          - name: Check for flaky code
            run: pyflakes .
 

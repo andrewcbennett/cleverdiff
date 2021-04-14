@@ -13,3 +13,7 @@ description-file = "README.md"
 
 [tool.flit.scripts]
 cleverdiff = "cleverdiff.cleverdiff:main"
+
+[tool.isort]
+profile = "black"
+float_to_top = true
