@@ -2,6 +2,8 @@
 [![license](https://img.shields.io/github/license/andrewcbennett/cleverdiff?color=yellow)](https://github.com/andrewcbennett/cleverdiff/blob/main/LICENSE)
 
 [![test status](https://img.shields.io/github/workflow/status/andrewcbennett/cleverdiff/test/main?label=tests)](https://github.com/andrewcbennett/cleverdiff/actions/workflows/test.yml)
+[![security test status](https://img.shields.io/github/workflow/status/andrewcbennett/cleverdiff/codeql-analysis/main?label=security)](https://github.com/andrewcbennett/cleverdiff/security)
+
 [![contributors](https://img.shields.io/github/contributors/andrewcbennett/cleverdiff)](https://github.com/andrewcbennett/cleverdiff/graphs/contributors)
 [![open issues](https://img.shields.io/github/issues-raw/andrewcbennett/cleverdiff)](https://github.com/andrewcbennett/cleverdiff/issues?q=is:open+is:issue)
 [![issues for beginners](https://img.shields.io/github/issues-raw/andrewcbennett/cleverdiff/good%20first%20issue?color=dark+green&label=issues+for+beginners)](https://github.com/andrewcbennett/cleverdiff/issues?q=is%3Aopen+is:issue+label:"good+first+issue")
