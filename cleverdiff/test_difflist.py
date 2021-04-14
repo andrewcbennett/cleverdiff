@@ -27,7 +27,7 @@ class Test_DiffList__translate_diff_syntax(object):
                     line2
                 """
         ).splitlines()
-        syntax, = [
+        (syntax,) = [
             i.strip() for i in difflib.unified_diff(ref, new, n=0) if i.startswith("@@")
         ]
 
@@ -56,7 +56,7 @@ class Test_DiffList__translate_diff_syntax(object):
                     line4
                 """
         ).splitlines()
-        syntax, = [
+        (syntax,) = [
             i.strip() for i in difflib.unified_diff(ref, new, n=0) if i.startswith("@@")
         ]
         assert syntax == "@@ -1,0 +2,2 @@"
@@ -78,7 +78,7 @@ class Test_DiffList__translate_diff_syntax(object):
                     line2
                 """
         ).splitlines()
-        syntax, = [
+        (syntax,) = [
             i.strip() for i in difflib.unified_diff(ref, new, n=0) if i.startswith("@@")
         ]
         assert syntax == "@@ -2 +1,0 @@"
@@ -101,7 +101,7 @@ class Test_DiffList__translate_diff_syntax(object):
                     line2
                 """
         ).splitlines()
-        syntax, = [
+        (syntax,) = [
             i.strip() for i in difflib.unified_diff(ref, new, n=0) if i.startswith("@@")
         ]
         assert syntax == "@@ -2,2 +1,0 @@"
@@ -124,7 +124,7 @@ class Test_DiffList__translate_diff_syntax(object):
                     line2
                 """
         ).splitlines()
-        syntax, = [
+        (syntax,) = [
             i.strip() for i in difflib.unified_diff(ref, new, n=0) if i.startswith("@@")
         ]
         assert syntax == "@@ -2 +2 @@"
@@ -149,7 +149,7 @@ class Test_DiffList__translate_diff_syntax(object):
                     line2
                 """
         ).splitlines()
-        syntax, = [
+        (syntax,) = [
             i.strip() for i in difflib.unified_diff(ref, new, n=0) if i.startswith("@@")
         ]
         assert syntax == "@@ -2,2 +2,2 @@"
@@ -173,7 +173,7 @@ class Test_DiffList__translate_diff_syntax(object):
                             line2
                         """
         ).splitlines()
-        syntax, = [
+        (syntax,) = [
             i.strip() for i in difflib.unified_diff(ref, new, n=0) if i.startswith("@@")
         ]
         assert syntax == "@@ -2 +2,2 @@"
@@ -197,7 +197,7 @@ class Test_DiffList__translate_diff_syntax(object):
                             line2
                         """
         ).splitlines()
-        syntax, = [
+        (syntax,) = [
             i.strip() for i in difflib.unified_diff(ref, new, n=0) if i.startswith("@@")
         ]
         assert syntax == "@@ -2,2 +2 @@"
