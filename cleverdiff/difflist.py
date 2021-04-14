@@ -41,7 +41,7 @@ class DiffList(object):
             The input unified diff syntax to translate. Must be in the form:
             "@@ -n1,n2 +m1,m2 @@" as described in
             https://www.gnu.org/software/diffutils/manual/html_node/Detailed-Unified.html#Detailed-Unified
-        
+
         Returns
         -------
         tuple of (str, int, int)
@@ -84,12 +84,12 @@ class DiffList(object):
         """
         Construct a DiffList object from the differences between two
         files.
-        
+
         Arguments
         ---------
         file1 : str
             The filename of the first file.
-        
+
         file2 : str
             The filename of the second file.
 

@@ -48,7 +48,7 @@ def summarise_results(diffseen, diffresult):
             result2[mode].append(hunk2)
 
         if any([len(v) for v in result2.values()]):
-            result += f"This difference is replicated elsewhere:\n"
+            result += "This difference is replicated elsewhere:\n"
             for mode, diffitems in result2.items():
                 if diffitems:
                     result += f" * with {MODE_DESCRIPTION[mode]}:\n"
