@@ -1,5 +1,5 @@
 # CleverDiff
-[![Build Status](https://travis-ci.org/andrewcbennett/cleverdiff.svg?branch=master)](https://travis-ci.org/andrewcbennett/cleverdiff)
+[![tests](https://github.com/andrewcbennett/cleverdiff/actions/workflows/test.yml/badge.svg?event=push)](https://github.com/andrewcbennett/cleverdiff/actions/workflows/test.yml)
 
 A tool for describing multiple differences in files.
 
