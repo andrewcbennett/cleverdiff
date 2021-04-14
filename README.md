@@ -1,6 +1,12 @@
-# CleverDiff
-[![tests](https://github.com/andrewcbennett/cleverdiff/actions/workflows/test.yml/badge.svg?event=push)](https://github.com/andrewcbennett/cleverdiff/actions/workflows/test.yml)
+[![latest release](https://img.shields.io/pypi/v/cleverdiff?color=blue&label=latest%20release)](https://pypi.org/project/cleverdiff/)
+[![license](https://img.shields.io/github/license/andrewcbennett/cleverdiff?color=yellow)](https://github.com/andrewcbennett/cleverdiff/blob/main/LICENSE)
 
+[![test status](https://img.shields.io/github/workflow/status/andrewcbennett/cleverdiff/test/main?label=tests)](https://github.com/andrewcbennett/cleverdiff/actions/workflows/test.yml)
+[![contributors](https://img.shields.io/github/contributors/andrewcbennett/cleverdiff)](https://github.com/andrewcbennett/cleverdiff/graphs/contributors)
+[![open issues](https://img.shields.io/github/issues-raw/andrewcbennett/cleverdiff)](https://github.com/andrewcbennett/cleverdiff/issues?q=is:open+is:issue)
+[![issues for beginners](https://img.shields.io/github/issues-raw/andrewcbennett/cleverdiff/good%20first%20issue?color=dark+green&label=issues+for+beginners)](https://github.com/andrewcbennett/cleverdiff/issues?q=is%3Aopen+is:issue+label:"good+first+issue")
+
+# CleverDiff
 A tool for describing multiple differences in files.
 
 ## Why?
